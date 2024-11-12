@@ -2,8 +2,13 @@
 # Copyright (C) 2013-Today  Carlos Eduardo Vercelino - CLVsol
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+import logging
+
 import erppeek  # http://erppeek.readthedocs.io/en/1.6.2/api.html#manage-addons
 import xmlrpc.client as xmlrpclib
+
+logging.basicConfig(level=logging.DEBUG)
+_logger = logging.getLogger(__name__)
 
 
 class DB(object):
@@ -35,16 +40,16 @@ class DB(object):
 
     def create(self):
 
-        url = 'http://localhost:8069'
+        url = self.server
         sock_common = xmlrpclib.ServerProxy('{}/xmlrpc/2/common'.format(url))
-        print('sock_common.version(): "{0}"'.format(sock_common.version()))
+        _logger.info(u'--> sock_common.version(): "{0}"'.format(sock_common.version()))
 
         client = erppeek.Client(server=self.server)
-        print('Databases found: {0}'.format(client.db.list()))
+        _logger.info(u'--> Databases found: "{0}"'.format(client.db.list()))
 
         if self.dbname not in client.db.list():
 
-            print('Creating database "{0}"...'.format(self.dbname))
+            _logger.info(u'--> Creating database "{0}"...'.format(self.dbname))
 
             client.create_database(
                 passwd=self.super_user_pw,
@@ -54,13 +59,13 @@ class DB(object):
                 user_password=self.admin_user_pw
             )
 
-            print('Done.')
+            _logger.info(u'--> Done.')
             return True
 
         else:
 
-            print('Database "{0}" already exists.'.format(self.dbname))
-            print('Done.')
+            _logger.info(u'--> Database "{0}" already exists.'.format(self.dbname))
+            _logger.info(u'--> Done.')
             return False
 
     def my_company_setup(self, CompanyName, website, Company_image):
