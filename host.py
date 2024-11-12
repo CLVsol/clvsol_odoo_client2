@@ -56,7 +56,7 @@ def host_login(host, dbname, user, user_pw):
         sock = xmlrpc.client.ServerProxy(xmlrpc_sock_str)
         _logger.info(u'%s %s', '--> sock', sock)
     except Exception as e:
-        _logger.info(u'%s %s', '--> except', e)
+        _logger.info(u'%s %s', '--> except', type(e).__name__)
         login_msg = '[22] Database does not exist.'
         _logger.info(u'%s %s %s %s', '-->',
                      login_msg,
